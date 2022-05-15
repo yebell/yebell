@@ -4,16 +4,16 @@ import { useState } from 'react';
 
 function App() {
 
-  let post = '강남 우동 맛집';
+  // let post = '강남 우동 맛집';
   let [글제목, 글제목변경] = useState(['남자 코트 추천', '여자 코트 추천', '맛집추천']);
-  let [따봉, 따봉변경] = useState(0);
+  let [따봉, 따봉변경] = useState([0,0,0]);
   // let [따봉1, 따봉변경1] = useState(0);
   // let [따봉2, 따봉변경2] = useState(0);
-  let [modal, setModal] = useState(true); //state 상태 저장
+  let [modal, setModal] = useState(false); //state 상태 저장
   let [title, setTitle] = useState(0);
   let [입력값, 입력값변경] = useState('');
   
-  // map 사용법 1. array자료 갯수만큼 함수안 코드 실행해줌 2. 함수의 파라미터는 array안에 있던 자료임 3. return에 뭐 적으면 array로 담아줌
+  // map 사용법 1. array자료 개수만큼 함수안 코드 실행해줌 2. 함수의 파라미터는 array안에 있던 자료임 3. return에 뭐 적으면 array로 담아줌
   // [1,2,3].map(function(a){
   //   console.log(a);
   //   return '12342411'
@@ -71,18 +71,26 @@ function App() {
       </div> */}
       
       {
-        글제목.map(function(a, i){ //실제 글개수만큼 추가 // 두번째 파라미터(i) = 반복문 돌 때마다 0부터 1씩 증가하는 정수
+        글제목.map(function(a, i){ //실제 글 개수만큼 추가 // 두번째 파라미터(i) = 반복문 돌 때마다 0부터 1씩 증가하는 정수
           return (
-          //   <div className='list'>
-          //   {/* <h4>{ a }</h4> */}
-          //   <h4>{ 글제목[i] }</h4>
-          //   <p>2월 17일 발행</p>
-          // </div>
-          <div className='list' key={i}>
-            <h4 onClick={ ()=>{ setModal(true); setTitle(i); } }>{ 글제목[i] } <span onClick={()=>{
-              따봉변경(따봉+1)
-            }}>👍</span> {따봉} </h4>
+          // {/* <h4>{ a }</h4> */}
+          // <h4>{ 글제목[i] }</h4>
+
+          // map 반복문으로 생성한 html 은 key 속성 추가해야 함. 그래야 리액트가 div를 구분함
+          <div className='list' key={i}> 
+            {/* setTitle 글제목 누를 때마다 모달 창 제목도 바뀜 */}
+            <h4 onClick={ ()=>{ setModal(true); setTitle(i); } }>{ 글제목[i] } 
+              <span onClick={()=>{
+                // 따봉변경(따봉+1)
+                // 각 글마다 따봉 먹게 하기
+                let copy = [...따봉];
+                copy[i] = copy[i] + 1;
+                따봉변경(copy)
+              }}>👍</span> {따봉[i]} 
+            </h4>
+
             <p>2월 17일 발행</p>
+            
             <button onClick={()=>{
               // state에서 자료 삭제하면 됨
               let copy = [...글제목];
@@ -90,14 +98,15 @@ function App() {
               copy.splice(i, 1);
               글제목변경(copy)
             }}>삭제</button>
+
           </div>
           )
         })
       } 
-
-      {/* <button onClick={()=>{ setTitle(0)} }>글제목0</button>
+      {/* 모달 글제목 바꾸기 */}
+      <button onClick={()=>{ setTitle(0)} }>글제목0</button>
       <button onClick={()=>{ setTitle(1)} }>글제목1</button>
-      <button onClick={()=>{ setTitle(2)} }>글제목2</button> */}
+      <button onClick={()=>{ setTitle(2)} }>글제목2</button>
       
       {/* input에 뭔가 입력시 코드실행하고 싶으면 onChange . onInput */}
       {/* e 는 이벤트 객체. 지금 발생하는 이벤트에 관련한 여러 기능이 담겨있음 */}
@@ -112,37 +121,32 @@ function App() {
         글제목변경(copy);
       }}>글발행</button>
 
-
-
       {/* <Modal/> 도 가능 */}
+      {/* <Modal></Modal> */}
       {
         // 조건문 쓰고 싶을 때 삼항연산자 사용
         // 조건식 ? 참일 때 실행할 코드 : 거짓일 때 실행할 코드
-        modal == true ? <Modal color={'skyblue'} title={title} 글제목 = {글제목}/> : null
+        // modal 상태가 true 이면 모달창이 보이게...
+        modal == true ? <Modal title={title} 글제목변경 = {글제목변경} 글제목 = {글제목}/> : null
       }
-      {/* <Modal></Modal> */}
-      
-
-      {/* <h4> { post } </h4> */}
+    
     </div>
   );
 }
 
+// 컴포넌트
 // const Modal = () => {}
 function Modal(props){
     return(
-      // 의미없는 div 대신 쓰는 거 
-      <>
-      <div className='modal' style={{background: props.color}}>
+      // 의미없는 div 대신 <></> 로 감싸도 됨
+      <div className='modal'>
         {/* <h4>{저 title state가 0이면 props.글제목[0]}</h4> */}
         <h4>{props.글제목[props.title]}</h4>
         <p>날짜</p>
         <p>상세내용</p>
-        {/* <button onClcik={()=>{ props.글제목변경(['여자 코트 추천']) }}>글수정</button> */}
-        <button>변경</button>
+
+        {/* <button onClick={()=>{ props.글제목변경(['여자 코트 추천', '강남 우동 맛집', '파이썬 독학']) }}>변경</button> */}
       </div>
-      <div></div>
-      </>
     )
 }
 
