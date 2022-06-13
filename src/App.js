@@ -7,8 +7,6 @@ function App() {
   // let post = '강남 우동 맛집';
   let [글제목, 글제목변경] = useState(['남자 코트 추천', '여자 코트 추천', '맛집추천']);
   let [따봉, 따봉변경] = useState([0,0,0]);
-  // let [따봉1, 따봉변경1] = useState(0);
-  // let [따봉2, 따봉변경2] = useState(0);
   let [modal, setModal] = useState(false); //state 상태 저장
   let [title, setTitle] = useState(0);
   let [입력값, 입력값변경] = useState('');
@@ -78,7 +76,7 @@ function App() {
 
           // map 반복문으로 생성한 html 은 key 속성 추가해야 함. 그래야 리액트가 div를 구분함
           <div className='list' key={i}> 
-            {/* setTitle 글제목 누를 때마다 모달 창 제목도 바뀜 */}
+            {/* setTitle : 글제목 누를 때마다 모달 창 제목도 바뀜 */}
             <h4 onClick={ ()=>{ setModal(true); setTitle(i); } }>{ 글제목[i] } 
               <span onClick={()=>{
                 // 따봉변경(따봉+1)
@@ -126,10 +124,13 @@ function App() {
       {/* <Modal/> 도 가능 */}
       {/* <Modal></Modal> */}
       {
+        // 자식컴포넌트에 작명={state이름}
+        // props 파라미터 등록 후 props.작명 사용
+
         // 조건문 쓰고 싶을 때 삼항연산자 사용
         // 조건식 ? 참일 때 실행할 코드 : 거짓일 때 실행할 코드
         // modal 상태가 true 이면 모달창이 보이게...
-        modal == true ? <Modal title={title} 글제목변경 = {글제목변경} 글제목 = {글제목}/> : null
+        modal == true ? <Modal title={title} 글제목변경={글제목변경} 글제목={글제목}/> : null
       }
     
     </div>
@@ -146,43 +147,12 @@ function Modal(props){
         <h4>{props.글제목[props.title]}</h4>
         <p>날짜</p>
         <p>상세내용</p>
-
-        {/* <button onClick={()=>{ props.글제목변경(['여자 코트 추천', '강남 우동 맛집', '파이썬 독학']) }}>변경</button> */}
+        
+        {/* <button onClick={()=>{
+          props.글제목변경(['여자 코트 추천', '강남 우동 맛집', '파이썬 독학'])
+        }}>글수정</button> */}
       </div>
     )
-}
-
-//예전 리액트 문법
-
-//class: 변수/함수 보관하는 덩어리
-//extends: 오른쪽에 있는 놈의 성질을 물려받겠습니다
-//constructor: class의 변수/초기값 저장할 때 사용
-class Profile extends React.Component {
-  constructor(){
-    super();
-    //state는 constructor 안에 작성
-    this.state = {name: 'Kim', age: '30'}
-  }
-
-  //함수 만들기
-  changeName(){
-    this.setState({name:'Park'})
-  }
-  //bind 함수를 쓰기 싫으면 arrow function으로 만들면 됨 
-  // changeName = () => {
-  //   this.setState({name:'Park'})
-  // }
-
-  render(){
-    return(
-      <div>
-        <h3>프로필입니다</h3>
-        <p> 저는 { this.state.name } 입니다.</p>
-        <button onClick = { ()=>{ this.setState( {name: 'Park'} ) } }>이름만 변경</button>
-        <button onClick = { this.changeName.bind(this) }>이름변경 함수로</button>
-      </div>
-    )
-  }
 }
 
 export default App;
